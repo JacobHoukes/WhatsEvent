@@ -4,38 +4,88 @@ from twilio.rest import Client
 
 load_dotenv()
 
-# Twilio credentials (DO NOT upload to GitHub!)
+# Twilio credentials
 ACCOUNT_SID = os.getenv("ACCOUNT_SID")
 API_KEY_SID = os.getenv("API_KEY_SID")
 API_KEY_SECRET = os.getenv("API_KEY_SECRET")
 CHAT_SERVICE_SID = os.getenv("CONVERSATION_SERVICE_ID")
+MY_PHONE = os.getenv("PRIVATE_WHATSAPP_NUM")  # Your WhatsApp number
+MASTERSCHOOL_WA_NUM = os.getenv("MASTERSCHOOL_WA_NUM")  # Twilio proxy number
 
 # Initialize Twilio client
 client = Client(API_KEY_SID, API_KEY_SECRET, ACCOUNT_SID)
 
+def list_messages(conversation_sid):
+    """Fetch and print all messages in a conversation."""
+    messages = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).messages.list()
 
-# Step 1: Create a new conversation
-def create_conversation():
+    if not messages:
+        print("No messages found in the conversation.")
+    else:
+        print(f"Messages in conversation {conversation_sid}:")
+        for msg in messages:
+            print(f"[{msg.date_created}] {msg.author}: {msg.body}")
+
+def list_participants(conversation_sid):
+    """Fetch and print all participants in a conversation."""
+    participants = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).participants.list()
+
+    if not participants:
+        print("No participants found in the conversation.")
+    else:
+        print(f"Participants in conversation {conversation_sid}:")
+        for p in participants:
+            address = p.messaging_binding.get("address", "N/A") if p.messaging_binding else "N/A"
+            print(f"- Participant SID: {p.sid}, Address: {address}")
+
+
+def list_conversations():
+    """ Fetch all existing conversations and return as a list. """
+    print("Fetching existing conversations...\n")
+    conversations = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.list()
+
+    if not conversations:
+        print("No conversations found.")
+    else:
+        for conv in conversations:
+            print(f"SID: {conv.sid} | Name: {conv.friendly_name} | State: {conv.state}")
+
+    return conversations
+
+
+def get_or_create_conversation():
+    """ Get an existing conversation or create a new one if none exist. """
+    conversations = list_conversations()
+
+    # If a conversation already exists, return its SID
+    if conversations:
+        print("Using existing conversation.")
+        return conversations[0].sid
+
+    # If no conversation exists, create one
+    print("Creating a new conversation...")
     conversation = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.create(
         friendly_name="Hackathon Conversation"
     )
-    print(f"Conversation created with SID: {conversation.sid}")
+    print(f"Created new conversation with SID: {conversation.sid}")
     return conversation.sid
 
 
-# Step 2: Add participant (your phone number)
-def add_participant(conversation_sid, phone_number):
+def add_participant(conversation_sid):
+    """ Add a participant (your WhatsApp number) to the conversation. """
+    print(f"Adding participant ({MY_PHONE}) to conversation {conversation_sid}...")
     participant = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(
         conversation_sid).participants.create(
-        messaging_binding_address=phone_number,
-        messaging_binding_proxy_address=os.getenv("MASTERSCHOOL_WA_NUM")
+        messaging_binding_address=MY_PHONE,
+        messaging_binding_proxy_address=MASTERSCHOOL_WA_NUM
     )
     print(f"Participant added with SID: {participant.sid}")
     return participant.sid
 
 
-# Step 3: Send a message to the conversation
 def send_message(conversation_sid, message):
+    """ Send a message to the given conversation. """
+    print(f"Sending message to conversation {conversation_sid}...")
     message = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).messages.create(
         body=message
     )
@@ -44,8 +94,22 @@ def send_message(conversation_sid, message):
 
 
 if __name__ == "__main__":
-    my_phone = os.getenv("PRIVATE_WHATSAPP_NUM")  # Replace with your WhatsApp number
-    # conversation_sid = create_conversation()  # Create a new conversation
-    # add_participant(conversation_sid, my_phone)
-    conversation_sid = os.getenv("CONVERSATION_SID")
-    send_message(conversation_sid, "Hello! This is a test message NO 2.")
+    # Print credentials for debugging
+    print(f"ACCOUNT_SID: {ACCOUNT_SID}")
+    print(f"API_KEY_SID: {API_KEY_SID}")
+    print(f"CHAT_SERVICE_SID: {CHAT_SERVICE_SID}")
+
+    # Get or create a conversation
+    conversation_sid = get_or_create_conversation()
+
+    # List messages in latest conversation:
+    list_messages(conversation_sid)
+
+    # List participants in latest conversation:
+    list_participants(conversation_sid)
+
+    # Add participant if needed
+    # add_participant(conversation_sid)
+
+    # Send a test message
+    # send_message(conversation_sid, "Hello! This is a test message from our updated script.")
