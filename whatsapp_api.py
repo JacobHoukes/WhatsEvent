@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from twilio.rest import Client
+from datetime import datetime
 
 load_dotenv()
 
@@ -141,7 +142,9 @@ def main():
     add_participant(conversation_sid)
 
     # Send a test message
-    send_message(conversation_sid, "Hello! This is a test message from our refactored script.")
+    current_time = datetime.now().strftime("%d/%m/%Y -> %H:%M:%S")
+    test_message = f"Hello! This is a test message sent at {current_time}"
+    send_message(conversation_sid, test_message)
 
 
 if __name__ == "__main__":
