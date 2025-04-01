@@ -23,15 +23,18 @@ def get_conversations_list_resource(conversation_sid=None):
 
 
 def list_messages(conversation_sid):
-    """Fetch and print all messages in a conversation."""
+    """Fetch and print the last 5 messages in a conversation."""
     messages = get_conversations_list_resource(conversation_sid).messages.list()
 
     if not messages:
         print("No messages found in the conversation.")
         return
 
-    print(f"Messages in conversation {conversation_sid}:")
-    for msg in messages:
+    # Get the last 5 messages
+    last_five_messages = messages[-5:]
+
+    print(f"Last 5 messages in conversation {conversation_sid}:")
+    for msg in last_five_messages:
         print(f"[{msg.date_created}] {msg.author}: {msg.body}")
 
 
@@ -112,6 +115,14 @@ def add_participant(conversation_sid):
     print(f"Participant added with SID: {participant.sid}")
     return participant.sid
 
+def remove_participant(conversation_sid, participant_sid):
+    """ Remove a participant from the given conversation. """
+    try:
+        client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).participants(participant_sid).delete()
+        print(f"Participant {participant_sid} removed from conversation {conversation_sid}.")
+    except Exception as e:
+        print(f"Error removing participant {participant_sid}: {e}")
+
 
 def send_message(conversation_sid, message):
     """ Send a message to the given conversation. """
@@ -129,22 +140,29 @@ def main():
     print(f"API_KEY_SID: {API_KEY_SID}")
     print(f"CHAT_SERVICE_SID: {CHAT_SERVICE_SID}")
 
+    #Testing:
+    conversations_list = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.list()
+    print(conversations_list)
+
     # Get or create a conversation
     conversation_sid = get_or_create_conversation()
 
     # List messages in latest conversation
-    list_messages(conversation_sid)
+    # list_messages(conversation_sid)
+
+    # Remove a participant
+    # remove_participant(conversation_sid, <ENTER PARTICIPANT SID HERE>)
 
     # List participants in latest conversation
     list_participants(conversation_sid)
 
-    # Add participant if needed
-    add_participant(conversation_sid)
+    # # Add participant if needed
+    # add_participant(conversation_sid)
 
-    # Send a test message
-    current_time = datetime.now().strftime("%d/%m/%Y -> %H:%M:%S")
-    test_message = f"Hello! This is a test message sent at {current_time}"
-    send_message(conversation_sid, test_message)
+    # # Send a test message
+    # current_time = datetime.now().strftime("%d/%m/%Y -> %H:%M:%S")
+    # test_message = f"Hello! This is a test message sent at {current_time}"
+    # send_message(conversation_sid, test_message)
 
 
 if __name__ == "__main__":
