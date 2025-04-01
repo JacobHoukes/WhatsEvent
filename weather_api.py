@@ -1,5 +1,4 @@
 import requests
-import json
 
 API_KEY = "cab41e07e0b2476d93f202352253103"
 
