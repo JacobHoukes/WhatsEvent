@@ -37,16 +37,12 @@
    - If merge conflicts occur, resolve them on GitHub via the **Pull Request Merge Conflict Editor** or locally.
 
 7. **Merge and Cleanup:**
-   - Once a feature branch is merged into `main`, delete it both locally and remotely in one step:
-     ```sh
-     git push origin --delete feature/your-feature-name && git branch -d feature/your-feature-name
-     ```
-
-8. **Update Local System After Merging PRs:**
-   - After merging a pull request on GitHub, update your local system:
+   - Once a feature branch is merged into `main`, update your local system and delete the branch:
      ```sh
      git checkout main
      git pull origin main
+     git branch -d feature/your-feature-name  # Delete local branch
+     git push origin --delete feature/your-feature-name  # Delete remote branch
      git fetch --prune  # Clean up remote-tracking branches
      ```
 
@@ -161,17 +157,14 @@ git push origin feature/your-feature-name
 
 ### Efficient Branch Cleanup After Merging
 
-Once a feature branch is merged into `main`, you can delete it both locally and remotely in one step:
+Once a feature branch is merged into `main`, update your local system and delete the branch:
 
 ```sh
+git checkout main
+git pull origin main
 git branch -d feature/your-feature-name  # Delete local branch
 git push origin --delete feature/your-feature-name  # Delete remote branch
-```
-
-However, if you want a one-liner that handles both in a single command:
-
-```sh
-git push origin --delete feature/your-feature-name && git branch -d feature/your-feature-name
+git fetch --prune  # Clean up remote-tracking branches
 ```
 
 ### Automatically Prune Deleted Remote Branches
