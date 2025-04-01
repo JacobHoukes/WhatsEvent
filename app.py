@@ -26,8 +26,5 @@ def main():
     send_message(get_or_create_conversation(), message=whatsapp_response)
 
 
-    # print_events_by_city(location)
-
-
 if __name__ == "__main__":
     main()

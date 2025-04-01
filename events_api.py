@@ -36,21 +36,23 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
             events = data['_embedded']['events']
             print(f"\n🎉 {len(events)} Events in {city}, {country_code}:\n")
 
+            found_events = ""
             for event in events:
                 name = event.get('name', 'N/A')
                 start_time = event.get('dates', {}).get('start', {}).get('localDate', 'Unknown Date')
                 venue = event.get('_embedded', {}).get('venues', [{}])[0].get('name', 'Unknown Venue')
                 city_name = event.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name', 'Unknown City')
-                events = f"""
+                found_events += f"""
                             🎟️ Event: {name}
                             📅 Date: {start_time}
-                            📍 Location: {venue}, {city_name}
+                            📍 Location: {venue}, {city_name}/n
                         """
-            return events
         else:
-            print(f"No events found in {city}, {country_code}.")
+            found_events = f"No events found in {city}, {country_code}."
     else:
-        print(f"❌ Error: {response.status_code} - {response.text}")
+        return f"❌ Error: {response.status_code} - {response.text}"
+
+    return found_events
 
 
 # Example: Get events in Los Angeles, US
