@@ -16,10 +16,10 @@ MASTERSCHOOL_WA_NUM = os.getenv("MASTERSCHOOL_WA_NUM")  # Twilio proxy number
 # Initialize Twilio client
 client = Client(API_KEY_SID, API_KEY_SECRET, ACCOUNT_SID)
 
-def get_conversation_resource(conversation_sid=None):
-    """Get the conversation resource for a given SID or the base conversation resource"""
-    base_resource = client.conversations.v1.services(CHAT_SERVICE_SID).conversations
-    return base_resource(conversation_sid) if conversation_sid else base_resource
+def get_conversations_list_resource(conversation_sid=None):
+    """Get the resource for listing conversations, or a specific conversation if SID is provided."""
+    conversations_list = client.conversations.v1.services(CHAT_SERVICE_SID).conversations
+    return conversations_list(conversation_sid) if conversation_sid else conversations_list
 
 
 def list_messages(conversation_sid):
