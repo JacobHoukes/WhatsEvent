@@ -7,10 +7,10 @@ load_dotenv()
 
 # Ticketmaster API Key
 API_KEY = os.getenv("API_KEY_EVENT")
-BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events.json'
+BASE_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
 
 # Function to search events by city
-def get_events_by_city(city, country_code="US", keyword=None, classification=None, page_size=10):
+def print_events_by_city(city, country_code="DE", keyword=None, classification=None, page_size=10):
     params = {
         "city": city,
         "countryCode": country_code,
@@ -41,11 +41,12 @@ def get_events_by_city(city, country_code="US", keyword=None, classification=Non
                 start_time = event.get('dates', {}).get('start', {}).get('localDate', 'Unknown Date')
                 venue = event.get('_embedded', {}).get('venues', [{}])[0].get('name', 'Unknown Venue')
                 city_name = event.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name', 'Unknown City')
-
-                print(f"🎟️ Event: {name}")
-                print(f"📅 Date: {start_time}")
-                print(f"📍 Location: {venue}, {city_name}")
-                print('-' * 40)
+                events = f"""
+                            🎟️ Event: {name}
+                            📅 Date: {start_time}
+                            📍 Location: {venue}, {city_name}
+                        """
+            return events
         else:
             print(f"No events found in {city}, {country_code}.")
     else:
@@ -55,4 +56,4 @@ def get_events_by_city(city, country_code="US", keyword=None, classification=Non
 # Example: Get events in Los Angeles, US
 # get_events_by_city(city="Chicago", country_code="US", keyword="theatre", classification="music", page_size=10)
 
-get_events_by_city(city="Berlin", country_code="DE", page_size=10) # optional: add keywords and classification
+# print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports, music") # optional: add keywords and classification
