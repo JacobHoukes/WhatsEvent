@@ -15,7 +15,7 @@ def create_message():
     location, date, hour = get_user_input()
 
     weather_message = print_weather(location, date, hour)
-    event_message = print_events_by_city(location)
+    event_message = print_events_by_city(location, country_code="DE", page_size=10, classification="sports") #Refactor Classification!!!
 
     return weather_message + event_message
 

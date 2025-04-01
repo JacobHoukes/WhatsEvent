@@ -25,37 +25,51 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
     if classification:
         params["classificationName"] = classification
 
-    # API Request
-    response = requests.get(BASE_URL, params=params)
+        try:
+            response = requests.get(BASE_URL, params=params)
+            response.raise_for_status()  # Raise an error for bad status codes
+            data = response.json()
 
-    if response.status_code == 200:
-        data = response.json()
+            # Check if events exist
+            events = data.get('_embedded', {}).get('events', [])
+            if not events:
+                return f"❌ No events found in {city}, {country_code}."
 
-        # Check if events exist
-        if '_embedded' in data and 'events' in data['_embedded']:
-            events = data['_embedded']['events']
-            print(f"\n🎉 {len(events)} Events in {city}, {country_code}:\n")
+            found_events = f"\n🎉 {len(events)} Events in {city}, {country_code}:\n"
 
-            found_events = ""
             for event in events:
-                name = event.get('name', 'N/A')
-                start_time = event.get('dates', {}).get('start', {}).get('localDate', 'Unknown Date')
-                venue = event.get('_embedded', {}).get('venues', [{}])[0].get('name', 'Unknown Venue')
-                city_name = event.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name', 'Unknown City')
-                found_events += f"""
-                            🎟️ Event: {name}
-                            📅 Date: {start_time}
-                            📍 Location: {venue}, {city_name}/n
-                        """
-        else:
-            found_events = f"No events found in {city}, {country_code}."
-    else:
-        return f"❌ Error: {response.status_code} - {response.text}"
 
-    return found_events
+                # Extract event details
+                name = event.get('name', 'N/A')
+                start_time = event.get('dates', {}).get('start', {}).get('dateTime', 'Unknown Date')
+                event_url = event.get('url', 'N/A')
+                event_type = (
+                event['classifications'][0]['segment']['name'], event['classifications'][0]['genre']['name'])
+
+
+                # Extract venue details
+                venue_name = event.get('_embedded', {}).get('venues', [{}])[0].get('name', 'Unknown Venue')
+                city_name = event.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name',
+                                                                                                  'Unknown City')
+                address = event.get('_embedded', {}).get('venues', [{}])[0].get('address', {}).get('line1',
+                                                                                                   'Unknown Address')
+                postal_code = event.get('_embedded', {}).get('venues', [{}])[0].get('postalCode', 'Unknown Postal Code')
+
+
+                # Format the event details into a string
+                found_events += f"""
+            🔹 **{name}**
+            📅 Date: {start_time}
+            📍 Location: {venue_name}, {address}, {city_name}, {postal_code}
+            🔗 Event Link: ({event_url})
+            Event Type: {event_type}
+                """
+            return found_events.strip()  # Remove trailing whitespace
+
+        except requests.exceptions.RequestException as e:
+            return f"❌ API Request Failed: {e}"
 
 
 # Example: Get events in Los Angeles, US
 # get_events_by_city(city="Chicago", country_code="US", keyword="theatre", classification="music", page_size=10)
-
-# print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports, music") # optional: add keywords and classification
+# print(print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports")) # optional: add keywords and classification
