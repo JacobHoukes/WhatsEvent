@@ -50,4 +50,4 @@ def get_events_by_city(city, country_code="US", keyword=None, classification=Non
 # Example: Get events in Los Angeles, US
 # get_events_by_city(city="Chicago", country_code="US", keyword="theatre", classification="music", page_size=10)
 
-get_events_by_city(city="Cologne", country_code="DE", page_size=10) # optional: add keywords and classification
+get_events_by_city(city="Berlin", country_code="DE", page_size=10) # optional: add keywords and classification
