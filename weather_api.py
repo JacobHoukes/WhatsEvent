@@ -1,30 +1,39 @@
 import requests
 import json
 
-# Replace with your WeatherAPI key
 API_KEY = "cab41e07e0b2476d93f202352253103"
+
 LOCATION = input("Please enter the name of your city: ")
-API_URL = f"http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={LOCATION}"
+DATE = input("Enter the date (YYYY-MM-DD): ")
+HOUR = input("Enter the hour (0-23): ")
 
+if not HOUR.isdigit() or not (0 <= int(HOUR) <= 23):
+    print("Invalid hour; please enter a number between 0 and 23.")
+    exit()
+API_URL = f"http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={LOCATION}&days=3&aqi=no&alerts=no"
 try:
-    # Send GET request
     response = requests.get(API_URL)
-
-    # Check for successful response
     if response.status_code == 200:
         weather_data = response.json()
 
-        # Extract and display relevant information
-        location = weather_data['location']['name']
-        country = weather_data['location']['country']
-        forecast = weather_data['forecast']['forecastday'][0]["date"]
-        temperature_c = weather_data['current']['temp_c']
-        condition = weather_data['current']['condition']['text']
+        forecast_days = weather_data['forecast']['forecastday']
+        forecast_for_date = next((day for day in forecast_days if day["date"] == DATE), None)
+        if forecast_for_date:
 
-        print(f"Weather in {location}, {country}")
-        print(f"Forecast: {forecast}")
-        print(f"Temperature: {temperature_c}°C")
-        print(f"Condition: {condition}")
+            hour_data = forecast_for_date["hour"]
+            selected_hour = next((h for h in hour_data if h["time"].endswith(f" {HOUR}:00")), None)
+            if selected_hour:
+                location = weather_data['location']['name']
+                country = weather_data['location']['country']
+                temperature_c = selected_hour['temp_c']
+                condition = selected_hour['condition']['text']
+                print(f"Weather in {location}, {country} on {DATE} at {HOUR}:00")
+                print(f"Temperature: {temperature_c}°C")
+                print(f"Condition: {condition}")
+            else:
+                print(f"No weather data available for {DATE} at {HOUR}:00.")
+        else:
+            print(f"No forecast data available for {DATE}.")
     else:
         print("Error:", response.status_code)
 except requests.RequestException as e:
