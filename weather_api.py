@@ -1,6 +1,10 @@
+import os
 import requests
+from dotenv import load_dotenv
 
-API_KEY = "cab41e07e0b2476d93f202352253103"
+load_dotenv()
+
+API_KEY = os.getenv("WEATHER_API_KEY")
 
 LOCATION = input("Please enter the name of your city: ")
 DATE = input("Enter the date (YYYY-MM-DD): ")
