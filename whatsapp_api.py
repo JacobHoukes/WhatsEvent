@@ -15,28 +15,37 @@ MASTERSCHOOL_WA_NUM = os.getenv("MASTERSCHOOL_WA_NUM")  # Twilio proxy number
 # Initialize Twilio client
 client = Client(API_KEY_SID, API_KEY_SECRET, ACCOUNT_SID)
 
+def get_conversation_resource(conversation_sid=None):
+    """Get the conversation resource for a given SID or the base conversation resource"""
+    base_resource = client.conversations.v1.services(CHAT_SERVICE_SID).conversations
+    return base_resource(conversation_sid) if conversation_sid else base_resource
+
+
 def list_messages(conversation_sid):
     """Fetch and print all messages in a conversation."""
-    messages = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).messages.list()
+    messages = get_conversation_resource(conversation_sid).messages.list()
 
     if not messages:
         print("No messages found in the conversation.")
-    else:
-        print(f"Messages in conversation {conversation_sid}:")
-        for msg in messages:
-            print(f"[{msg.date_created}] {msg.author}: {msg.body}")
+        return
+
+    print(f"Messages in conversation {conversation_sid}:")
+    for msg in messages:
+        print(f"[{msg.date_created}] {msg.author}: {msg.body}")
+
 
 def list_participants(conversation_sid):
     """Fetch and print all participants in a conversation."""
-    participants = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).participants.list()
+    participants = get_conversation_resource(conversation_sid).participants.list()
 
     if not participants:
         print("No participants found in the conversation.")
-    else:
-        print(f"Participants in conversation {conversation_sid}:")
-        for p in participants:
-            address = p.messaging_binding.get("address", "N/A") if p.messaging_binding else "N/A"
-            print(f"- Participant SID: {p.sid}, Address: {address}")
+        return
+
+    print(f"Participants in conversation {conversation_sid}:")
+    for p in participants:
+        address = p.messaging_binding.get("address", "N/A") if p.messaging_binding else "N/A"
+        print(f"- Participant SID: {p.sid}, Address: {address}")
 
 
 def list_conversations():
@@ -72,10 +81,30 @@ def get_or_create_conversation():
 
 
 def add_participant(conversation_sid):
-    """ Add a participant (your WhatsApp number) to the conversation. """
+    """ Add a participant (your WhatsApp number) to the conversation if not already present """
+    participants = get_conversation_resource(conversation_sid).participants.list()
+
+    #check if your phone number is already a participant
+    your_participant = None
+    for p in participants:
+        if p.messaging_binding and p.messaging_binding.get("address") == MY_PHONE:
+            your_participant = p
+            break
+
+    if your_participant:
+        print(f"Your number ({MY_PHONE}) is already a participant.")
+        return your_participant.sid
+
+    # prints all participants if they exist
+    if participants:
+        print(f"Participants in conversation {conversation_sid}:")
+        for p in participants:
+            address = p.messaging_binding.get("address", "N/A" if p.messaging_binding else "N/A")
+            print(f"- Participant SID: {p.sid}, Address: {address}")
+
+    # add new participant
     print(f"Adding participant ({MY_PHONE}) to conversation {conversation_sid}...")
-    participant = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(
-        conversation_sid).participants.create(
+    participant = get_conversation_resource(conversation_sid).participants.create(
         messaging_binding_address=MY_PHONE,
         messaging_binding_proxy_address=MASTERSCHOOL_WA_NUM
     )
@@ -86,14 +115,14 @@ def add_participant(conversation_sid):
 def send_message(conversation_sid, message):
     """ Send a message to the given conversation. """
     print(f"Sending message to conversation {conversation_sid}...")
-    message = client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conversation_sid).messages.create(
+    message = get_conversation_resource(conversation_sid).messages.create(
         body=message
     )
     print(f"Message sent with SID: {message.sid}")
     return message.sid
 
 
-if __name__ == "__main__":
+def main():
     # Print credentials for debugging
     print(f"ACCOUNT_SID: {ACCOUNT_SID}")
     print(f"API_KEY_SID: {API_KEY_SID}")
@@ -102,14 +131,18 @@ if __name__ == "__main__":
     # Get or create a conversation
     conversation_sid = get_or_create_conversation()
 
-    # List messages in latest conversation:
+    # List messages in latest conversation
     list_messages(conversation_sid)
 
-    # List participants in latest conversation:
+    # List participants in latest conversation
     list_participants(conversation_sid)
 
     # Add participant if needed
-    # add_participant(conversation_sid)
+    add_participant(conversation_sid)
 
     # Send a test message
-    # send_message(conversation_sid, "Hello! This is a test message from our updated script.")
+    send_message(conversation_sid, "Hello! This is a test message from our refactored script.")
+
+
+if __name__ == "__main__":
+    main()
