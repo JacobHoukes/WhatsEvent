@@ -28,12 +28,11 @@ def print_weather(location, date, hour):
                     country = weather_data['location']['country']
                     temperature_c = selected_hour['temp_c']
                     condition = selected_hour['condition']['text']
-                    return \
-                        f"""
-                            Weather in {location}, {country} on {date} at {hour}:00
-                            Temperature: {temperature_c}°C
-                            Condition: {condition}"
-                        """
+                    return f"""
+                                Weather in {location}, {country} on {date} at {hour}:00
+                                Temperature: {temperature_c}°C
+                                Condition: {condition}"
+                            """
 
                 else:
                     print(f"No weather data available for {date} at {hour}:00.")
