@@ -4,6 +4,7 @@ from datetime import datetime
 
 JSON_FILE = "participants.json"
 
+
 # Save phone number to JSON file
 def save_number_to_json(phone_number):
     data = {}
