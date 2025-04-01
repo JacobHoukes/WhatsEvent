@@ -15,7 +15,11 @@
      ```
 
 3. **Make Changes:**
-   - Edit files and commit your changes:
+   - Edit files and stage your changes:
+     ```sh
+     git add <files>  # or git add .
+     ```
+   - Commit your changes:
      ```sh
      git commit -m "Description of changes"
      ```
@@ -31,6 +35,20 @@
 
 6. **Resolve Conflicts:**
    - If merge conflicts occur, resolve them on GitHub via the **Pull Request Merge Conflict Editor** or locally.
+
+7. **Merge and Cleanup:**
+   - Once a feature branch is merged into `main`, delete it both locally and remotely in one step:
+     ```sh
+     git push origin --delete feature/your-feature-name && git branch -d feature/your-feature-name
+     ```
+
+8. **Update Local System After Merging PRs:**
+   - After merging a pull request on GitHub, update your local system:
+     ```sh
+     git checkout main
+     git pull origin main
+     git fetch --prune  # Clean up remote-tracking branches
+     ```
 
 ---
 
@@ -121,7 +139,7 @@ git push origin feature/your-feature-name
 ### Resolving Conflicts (If Any)
 
 - If a merge conflict occurs, GitHub will notify you when attempting to merge a pull request.
-- Conflicts can be resolved directly on GitHub via the **Pull Request Merge Conflict Editor** ([example](https://github.com/JacobHoukes/WhatsEvent/compare/conversaiton?expand=1)).
+- Conflicts can be resolved directly on GitHub via the **Pull Request Merge Conflict Editor**.
 - If you prefer to resolve conflicts locally:
   1. Pull the latest changes.
   2. Edit conflicting files manually.
@@ -139,7 +157,42 @@ git push origin feature/your-feature-name
 
 ---
 
-## 6. Staying Updated Throughout the Hackathon
+## 6. Pruning and Cleaning Up Branches
+
+### Efficient Branch Cleanup After Merging
+
+Once a feature branch is merged into `main`, you can delete it both locally and remotely in one step:
+
+```sh
+git branch -d feature/your-feature-name  # Delete local branch
+git push origin --delete feature/your-feature-name  # Delete remote branch
+```
+
+However, if you want a one-liner that handles both in a single command:
+
+```sh
+git push origin --delete feature/your-feature-name && git branch -d feature/your-feature-name
+```
+
+### Automatically Prune Deleted Remote Branches
+
+To remove all deleted remote branches from your local system:
+
+```sh
+git fetch --prune
+```
+
+To make this automatic every time you fetch or pull:
+
+```sh
+git config --global fetch.prune true
+```
+
+Now, Git will automatically clean up remote-tracking branches that no longer exist on GitHub.
+
+---
+
+## 7. Staying Updated Throughout the Hackathon
 
 ### Pull Regularly
 
@@ -151,19 +204,32 @@ git pull origin main
 git checkout feature/your-feature-name  # If returning to your branch
 ```
 
+### Updating Local Branches After Merging PRs
+
+After merging a pull request on GitHub, update your local system:
+
+```sh
+git checkout main
+git pull origin main
+git fetch --prune  # Clean up remote-tracking branches
+```
+
+This keeps your local repository in sync and prevents conflicts.
+
 ---
 
-## 7. Best Practices
+## 8. Best Practices
 
 ✅ **Frequent Commits:** Commit changes regularly with clear messages.
 ✅ **Small PRs:** Keep pull requests focused and manageable.
 ✅ **Communicate:** Inform the team about progress and issues.
 ✅ **Use `.gitignore`:** Ensure sensitive files (e.g., `.env`) are ignored.
+✅ **Clean Up Branches:** Delete merged branches to keep the repository tidy.
 🚫 **Don't Force Push `main`:** Avoid force-pushing to `main` unless absolutely necessary.
 
 ---
 
-## 8. Troubleshooting
+## 9. Troubleshooting
 
 ### "Already up to date" when pulling:
 
