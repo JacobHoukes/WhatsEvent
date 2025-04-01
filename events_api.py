@@ -1,7 +1,12 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Ticketmaster API Key
-API_KEY = 'c13kT4J2tWrCpPkMZXSSyzpJthm3rfpG'
+API_KEY = os.getenv("API_KEY_EVENT")
 BASE_URL = 'https://app.ticketmaster.com/discovery/v2/events.json'
 
 # Function to search events by city
