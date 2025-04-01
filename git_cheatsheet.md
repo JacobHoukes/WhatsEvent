@@ -41,8 +41,14 @@
      ```sh
      git checkout main
      git pull origin main
-     git branch -d feature/your-feature-name  # Delete local branch
-     git push origin --delete feature/your-feature-name  # Delete remote branch
+      ```
+     ```sh
+     git branch -d <your_branch_name_here>  # Delete local branch
+     ```
+     ```sh
+     git push origin --delete <your_branch_name_here>  # Delete remote branch
+     ```
+     ```sh
      git fetch --prune  # Clean up remote-tracking branches
      ```
 
