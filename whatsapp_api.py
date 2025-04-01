@@ -24,7 +24,7 @@ def get_conversations_list_resource(conversation_sid=None):
 
 def list_messages(conversation_sid):
     """Fetch and print all messages in a conversation."""
-    messages = get_conversation_resource(conversation_sid).messages.list()
+    messages = get_conversations_list_resource(conversation_sid).messages.list()
 
     if not messages:
         print("No messages found in the conversation.")
@@ -37,7 +37,7 @@ def list_messages(conversation_sid):
 
 def list_participants(conversation_sid):
     """Fetch and print all participants in a conversation."""
-    participants = get_conversation_resource(conversation_sid).participants.list()
+    participants = get_conversations_list_resource(conversation_sid).participants.list()
 
     if not participants:
         print("No participants found in the conversation.")
@@ -83,7 +83,7 @@ def get_or_create_conversation():
 
 def add_participant(conversation_sid):
     """ Add a participant (your WhatsApp number) to the conversation if not already present """
-    participants = get_conversation_resource(conversation_sid).participants.list()
+    participants = get_conversations_list_resource(conversation_sid).participants.list()
 
     #check if your phone number is already a participant
     your_participant = None
@@ -105,7 +105,7 @@ def add_participant(conversation_sid):
 
     # add new participant
     print(f"Adding participant ({MY_PHONE}) to conversation {conversation_sid}...")
-    participant = get_conversation_resource(conversation_sid).participants.create(
+    participant = get_conversations_list_resource(conversation_sid).participants.create(
         messaging_binding_address=MY_PHONE,
         messaging_binding_proxy_address=MASTERSCHOOL_WA_NUM
     )
@@ -116,7 +116,7 @@ def add_participant(conversation_sid):
 def send_message(conversation_sid, message):
     """ Send a message to the given conversation. """
     print(f"Sending message to conversation {conversation_sid}...")
-    message = get_conversation_resource(conversation_sid).messages.create(
+    message = get_conversations_list_resource(conversation_sid).messages.create(
         body=message
     )
     print(f"Message sent with SID: {message.sid}")
