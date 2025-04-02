@@ -83,7 +83,7 @@ def get_or_create_conversation(json_data):
 
     for conversation in conversations:
         for key, value in json_data.items():
-            if conversation.sid == key or MY_PHONE == value:
+            if conversation.sid == key and MY_PHONE == value:
                 return conversation.sid
 
     # If no conversation exists above, create one
