@@ -42,6 +42,8 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
                 # Extract event details
                 name = event.get('name', 'N/A')
                 start_time = event.get('dates', {}).get('start', {}).get('dateTime', 'Unknown Date')
+                if start_time != "Unknown Date":
+                    start_time = start_time.replace("T", ", starting at ").replace("Z", "")
                 event_url = event.get('url', 'N/A')
                 event_type = (
                 event['classifications'][0]['segment']['name'], event['classifications'][0]['genre']['name'])
@@ -72,4 +74,4 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
 
 # Example: Get events in Los Angeles, US
 # get_events_by_city(city="Chicago", country_code="US", keyword="theatre", classification="music", page_size=10)
-# print(print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports")) # optional: add keywords and classification
+print(print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports")) # optional: add keywords and classification
