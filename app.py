@@ -35,7 +35,7 @@ def create_response(location, date, hour):
     event_message = print_events_by_city(location, country_code="DE", page_size=10, classification="sports")
     weather_message = get_weather(location, date, hour)
     try:
-        message = event_message + weather_message
+        message = weather_message + event_message
         return message
     except TypeError as t:
         print(f"Error: {t}")
