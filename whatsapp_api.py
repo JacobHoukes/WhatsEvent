@@ -83,6 +83,21 @@ def get_or_create_conversation():
     print(f"Created new conversation with SID: {conversation.sid}")
     return conversation.sid
 
+def delete_all_conversations():
+    """Delete all existing conversations."""
+    conversations = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.list()
+
+    if not conversations:
+        print("No conversations to delete.")
+        return
+
+    for conv in conversations:
+        try:
+            client.conversations.v1.services(CHAT_SERVICE_SID).conversations(conv.sid).delete()
+            print(f"Deleted conversation SID: {conv.sid} | Name: {conv.friendly_name}")
+        except Exception as e:
+            print(f"Error deleting conversation {conv.sid}: {e}")
+
 
 def add_participant(conversation_sid):
     """ Add a participant (your WhatsApp number) to the conversation if not already present """
@@ -141,11 +156,12 @@ def main():
     print(f"CHAT_SERVICE_SID: {CHAT_SERVICE_SID}")
 
     #Testing:
-    conversations_list = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.list()
-    print(conversations_list)
+    list_conversations()
 
+    # Call the function to delete all conversations
+    #delete_all_conversations()
     # Get or create a conversation
-    conversation_sid = get_or_create_conversation()
+    # conversation_sid = get_or_create_conversation()
 
     # List messages in latest conversation
     # list_messages(conversation_sid)
@@ -154,7 +170,7 @@ def main():
     # remove_participant(conversation_sid, <ENTER PARTICIPANT SID HERE>)
 
     # List participants in latest conversation
-    list_participants(conversation_sid)
+    # list_participants(conversation_sid)
 
     # # Add participant if needed
     # add_participant(conversation_sid)
