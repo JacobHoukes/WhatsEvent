@@ -7,8 +7,8 @@ load_dotenv()
 API_KEY = os.getenv("WEATHER_API_KEY")
 
 
-def print_weather(location, date, hour):
-    if not hour.isdigit() or not (0 <= int(hour) <= 23):
+def get_weather(location, date, hour):
+    if not (0 <= int(hour) <= 23):
         print("Invalid hour; please enter a number between 0 and 23.")
         exit()
     API_URL = f"http://api.weatherapi.com/v1/forecast.json?key={API_KEY}&q={location}&days=3&aqi=no&alerts=no"
@@ -35,12 +35,12 @@ def print_weather(location, date, hour):
             """
 
                 else:
-                    return(f"No weather data available for {date} at {hour}:00.")
+                    return f"No weather data available for {date} at {hour}:00."
             else:
-                return(f"No forecast data available for {date}.")
+                return f"No forecast data available for {date}."
         else:
-            return("Error:", response.status_code)
+            return "Error:", response.status_code
     except requests.RequestException as e:
-        return("Request failed:", e)
+        return "Request failed:", e
 
-# print(print_weather("Berlin", "2025-04-02", "18"))
+# print(get_weather("Berlin", "2025-04-02", "18"))

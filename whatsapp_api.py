@@ -35,6 +35,11 @@ def list_messages(conversation_sid):
         print(f"[{msg.date_created}] {msg.author}: {msg.body}")
     return messages
 
+def return_latest_author(conversation_sid):
+    messages = get_conversations_list_resource(conversation_sid).messages.list()
+    author = messages[-1].author
+
+    return author
 
 def return_latest_message(conversation_sid):
     messages = get_conversations_list_resource(conversation_sid).messages.list()
@@ -165,9 +170,13 @@ def main():
     list_conversations()
 
     # Call the function to delete all conversations
-    delete_all_conversations()
+    # delete_all_conversations()
     # Get or create a conversation
     # conversation_sid = get_or_create_conversation()
+    # print(return_latest_author(conversation_sid))
+    # send_message(conversation_sid, message="Another Test!")
+    # print(return_latest_author(conversation_sid))
+
 
     # List messages in latest conversation
     # list_messages(conversation_sid)
@@ -177,7 +186,7 @@ def main():
 
     # List participants in latest conversation
 
-    # # Add participant if needed
+    # Add participant if needed
 
     # add_participant(conversation_sid)
     # list_participants(conversation_sid)

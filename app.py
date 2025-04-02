@@ -1,7 +1,7 @@
 from WhatsEvent.whatsapp_api import send_message
-from weather_api import print_weather
+from weather_api import get_weather
 from events_api import print_events_by_city
-from whatsapp_api import get_or_create_conversation, return_latest_message, add_participant, list_messages
+from whatsapp_api import get_or_create_conversation, return_latest_message, add_participant, list_messages, return_latest_author
 import time
 
 def get_user_input():
@@ -15,7 +15,7 @@ def get_user_input():
 
 def create_response(location, date, hour):
     event_message = print_events_by_city(location, country_code="DE", page_size=10, classification="sports") #Refactor Classification!!!
-    weather_message = print_weather(location, date, hour)
+    weather_message = get_weather(location, date, hour)
     try:
         message = event_message + weather_message
         return message
@@ -25,12 +25,11 @@ def create_response(location, date, hour):
         print(u)
 
 
-
 def manage_conversation(messages):
     pass
 
 from listening import write_file
-def main():
+def main_test():
 
     print("Starting Weather & Events WhatsApp Bot...")
     # 1. Get or Create a Conversation:
@@ -52,41 +51,79 @@ def main():
         time.sleep(10) # Check only every 10 seconds
         new_message = return_latest_message(conversation_sid)
 
-        if new_message != welcome_message:
+        if new_message.lower() == "stop":
+            break
+
+        elif new_message != welcome_message:
             city, date, hour = new_message.split(",")
             response = create_response(city, date, hour)
 
             # validation -> messages, state, ...
             # write JSON
 
-            # !!! Pass new_message to APIs !!!
+            # Pass new_message to APIs:
             # Define Message
             send_message(conversation_sid, message=response)
+            send_message(conversation_sid, message="")
+
+
+def main():
+    print("Starting Weather & Events WhatsApp Bot...")
+    # 1. Get or Create a Conversation:
+    conversation_sid = get_or_create_conversation()
+
+    # 2. Add or Confirm Participant to the Conversation:
+    participant_sid = add_participant(conversation_sid)
+
+    # 3. send_welcome_message
+    welcome_message = "Welcome to WhatsEvents-Bot! Please provide your city and the date you want to go out: (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service."
+    send_message(conversation_sid, message=welcome_message)
+
+    # Store the welcome message
+    last_processed_message = return_latest_message(conversation_sid)
+
+    # Main service loop
+    while True:
+
+        time.sleep(10)  # Check only every 10 seconds
+        new_message = return_latest_message(conversation_sid)
+        new_message_author = return_latest_author(conversation_sid)
+
+        # Skip if no new message or same as last processed
+        if new_message == last_processed_message:
+            continue
+
+        # Check for stop command
+        if new_message.lower().strip() == "stop":
+            send_message(conversation_sid, message="Thank you for using WhatsEvents-Bot! The service has been stopped.")
             break
 
-    # User-Response:
+        if new_message_author != "system":
+            try:
+                # Process the message
+                city, date, hour = new_message.split(",")
+                city = city.strip()
+                date = date.strip()
+                hour = hour.strip()
 
-    # Validation
+                response = create_response(city, date, hour)
+                send_message(conversation_sid, message=response)
 
-    # 3. Get the latest messages, & use the latest message to design the response.
+                # Add prompt for next query
+                time.sleep(1)
+                send_message(conversation_sid,
+                             message="You can provide another city and date or type 'stop' to end the service. (e.g.: 'Berlin, 2025-04-04, 18')")
 
-    # 4. Start/Continue Conversation -> Listening Function
+            except ValueError:
+                # Handle incorrect format
+                if return_latest_message(conversation_sid) == "Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.":
+                    continue
+                else:
+                    send_message(conversation_sid,
+                             message="Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.")
 
-
-    # 5. If new:
-    #   send_welcome_message()
-    # Else:
-    #   Get user input
-    #   send_message(get_or_create_conversation, message=create_message)
-
-    # validate input and send data to API for saving and processing
-
-
-
-
-    # whatsapp_response = create_message()
-    # send_message(get_or_create_conversation(), message=whatsapp_response)
-
+        # Update the last processed message
+        last_processed_message = new_message
 
 if __name__ == "__main__":
     main()
