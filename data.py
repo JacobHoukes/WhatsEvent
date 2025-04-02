@@ -5,7 +5,7 @@ from datetime import datetime
 JSON_FILE = "participants.json"
 
 # Save phone number to JSON file
-def read_file(phone_number):
+def read_file():
     data = {}
     if os.path.exists(JSON_FILE):
         with open(JSON_FILE, "r") as file:

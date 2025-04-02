@@ -77,16 +77,16 @@ def list_conversations():
     return conversations
 
 
-def get_or_create_conversation():
+def get_or_create_conversation(json_data):
     """ Get an existing conversation or create a new one if none exist. """
     conversations = list_conversations()
 
-    # If a conversation already exists, return its SID
-    if conversations:
-        print("Using existing conversation.")
-        return conversations[0].sid
+    for conversation in conversations:
+        for key in json_data.keys():
+            if conversation.sid == key:
+                return conversation.sid
 
-    # If no conversation exists, create one
+    # If no conversation exists above, create one
     print("Creating a new conversation...")
     conversation = client.conversations.v1.services(CHAT_SERVICE_SID).conversations.create(
         friendly_name="Hackathon Conversation"
@@ -170,7 +170,7 @@ def main():
     list_conversations()
 
     # Call the function to delete all conversations
-    # delete_all_conversations()
+    #delete_all_conversations()
     # Get or create a conversation
     # conversation_sid = get_or_create_conversation()
     # print(return_latest_author(conversation_sid))
