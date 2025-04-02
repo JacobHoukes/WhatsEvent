@@ -32,7 +32,7 @@ def create_response(location, date, hour):
     Returns:
         str: Combined message with events and weather information
     """
-    event_message = print_events_by_city(location, country_code="DE", page_size=10, classification="sports")
+    event_message = print_events_by_city(location, country_code="DE", page_size=3)
     weather_message = get_weather(location, date, hour)
     try:
         message = weather_message + event_message
@@ -64,7 +64,7 @@ def main():
 
     # Main service loop
     while True:
-        time.sleep(10)  # Check only every 10 seconds
+        time.sleep(5)  # Check only every 10 seconds
         new_message = return_latest_message(conversation_sid)
         new_message_author = return_latest_author(conversation_sid)
 

@@ -47,7 +47,7 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
         if not events:
             return f"❌ No events found in {city}, {country_code}."
 
-        found_events = f"\n🎉 {len(events)} Events in {city}, {country_code}:\n"
+        found_events = f"🎉 {len(events)} Events in {city}, {country_code}:\n"
 
         for event in events:
             # Extract event details
@@ -62,7 +62,7 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
             )
 
             # Extract venue details
-            venue_name = event.get('_embedded', {}).get('venues', [{}])[0].get('name', 'Unknown Venue')
+            venue_name = event.get('_embedded', {}).get('venues', [{}])[0].get('name', '')
             city_name = event.get('_embedded', {}).get('venues', [{}])[0].get('city', {}).get('name', 'Unknown City')
             address = event.get('_embedded', {}).get('venues', [{}])[0].get('address', {}).get('line1',
                                                                                                'Unknown Address')
@@ -72,11 +72,12 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
             found_events += f"""
         🔹 **{name}**
         📅 Date: {start_time}
-        📍 Location: {venue_name}, {address}, {city_name}, {postal_code}
-        🔗 Event Link: ({event_url})
-        Event Type: {event_type}
+        📍 Location: {venue_name} - {address}, {city_name}, {postal_code}
+        🎭Event Type: {event_type}
+        🔗 Event Link: {event_url}
+        
             """
-        return found_events.strip()  # Remove trailing whitespace
+        return found_events # Remove trailing whitespace
 
     except requests.exceptions.RequestException as e:
         return f"❌ API Request Failed: {e}"

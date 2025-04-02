@@ -42,9 +42,10 @@ def get_weather(location, date, hour):
                     temperature_c = selected_hour['temp_c']
                     condition = selected_hour['condition']['text']
                     return f"""
-        Weather in {location}, {country} on {date} at {hour}:00
-        🌡️Temperature: {temperature_c}°C
-        ⛅Condition: {condition}
+        Weather in {location}, {country} on {date} at {hour}:00 :
+        🌡️ Temperature: {temperature_c}°C
+        ⛅ Condition: {condition}
+        
         """
                 else:
                     return f"No weather data available for {date} at {hour}:00."
