@@ -13,36 +13,17 @@ def read_file():
     return data
 
 
-# Save Participant in JSON FIle: Number, Message, Participant_ID, Date
-def write_file(phone_number, messages, state, location, date):
+def write_file(conversation_sid, phone_num):
     """Update participant's information in the JSON file."""
-    data = read_file(phone_number)
-
-    if phone_number in data:
-        # Update existing participant
-        data[phone_number]['messages'] = messages
-        data[phone_number]['state'] = state
-        data[phone_number]['location'] = location
-        data[phone_number]['date'] = date
-        print("Data updated successfully.")
-    else:
-        # Add new participant
-        data[phone_number] = {
-            "messages": messages,
-            "state": state,
-            "location": location,
-            "date": date,
-            "hour": None,  # Keeping this based on your example structure
-        }
-        print("New participant added.")
-
+    data = read_file()
+    data[conversation_sid] = phone_num
     try:
         with open(JSON_FILE, "w") as file:
             json.dump(data, file, indent=4)
-            print(f"File ({file}) successfully written")
+            print(f"File ({JSON_FILE}) successfully written")
     except FileNotFoundError as f:
         print(f"ERROR found: {f}")
-    return data
+
 
 # Auto-reply function
 def auto_reply(client, conversation_sid, phone_number):

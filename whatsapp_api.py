@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from twilio.rest import Client
-from datetime import datetime
+from data import write_file
 
 load_dotenv()
 
@@ -82,8 +82,8 @@ def get_or_create_conversation(json_data):
     conversations = list_conversations()
 
     for conversation in conversations:
-        for key in json_data.keys():
-            if conversation.sid == key:
+        for key, value in json_data.items():
+            if conversation.sid == key or MY_PHONE == value:
                 return conversation.sid
 
     # If no conversation exists above, create one
@@ -92,6 +92,7 @@ def get_or_create_conversation(json_data):
         friendly_name="Hackathon Conversation"
     )
     print(f"Created new conversation with SID: {conversation.sid}")
+    write_file(conversation.sid, MY_PHONE)
     return conversation.sid
 
 def delete_all_conversations():
