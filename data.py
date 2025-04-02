@@ -1,11 +1,16 @@
 import os
 import json
-from datetime import datetime
 
 JSON_FILE = "participants.json"
 
-# Save phone number to JSON file
+
 def read_file():
+    """
+    Read the participants data from JSON file.
+
+    Returns:
+        dict: Dictionary containing conversation SIDs and phone numbers
+    """
     data = {}
     if os.path.exists(JSON_FILE):
         with open(JSON_FILE, "r") as file:
@@ -14,7 +19,13 @@ def read_file():
 
 
 def write_file(conversation_sid, phone_num):
-    """Update participant's information in the JSON file."""
+    """
+    Update participant's information in the JSON file.
+
+    Args:
+        conversation_sid (str): The conversation SID to save
+        phone_num (str): The phone number to associate with the conversation
+    """
     data = read_file()
     data[conversation_sid] = phone_num
     try:
@@ -23,18 +34,3 @@ def write_file(conversation_sid, phone_num):
             print(f"File ({JSON_FILE}) successfully written")
     except FileNotFoundError as f:
         print(f"ERROR found: {f}")
-
-
-# Auto-reply function
-def auto_reply(client, conversation_sid, phone_number):
-    reply_message = "Welcome to Masterschool! How can we assist you today?"
-    send_message(client, conversation_sid, reply_message)
-    read_file(phone_number)
-
-
-# Send a message function
-def send_message(client, conversation_sid, message):
-    conversation = client.conversations.v1.services(conversation_sid).conversations
-    conversation(conversation_sid).messages.create(body=message)
-    print("Message sent.")
-
