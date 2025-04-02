@@ -1,6 +1,7 @@
-from WhatsEvent.whatsapp_api import send_message
+from whatsapp_api import send_message
 from weather_api import get_weather
 from events_api import print_events_by_city
+from data import read_file, write_file
 from whatsapp_api import get_or_create_conversation, return_latest_message, add_participant, list_messages, return_latest_author
 import time
 
@@ -10,7 +11,6 @@ def get_user_input():
     DATE = input("Enter the date (YYYY-MM-DD): ")
     HOUR = input("Enter the hour (0-23): ")
     return LOCATION, DATE, HOUR
-
 
 
 def create_response(location, date, hour):
@@ -25,52 +25,11 @@ def create_response(location, date, hour):
         print(u)
 
 
-def manage_conversation(messages):
-    pass
-
-from listening import write_file
-def main_test():
-
-    print("Starting Weather & Events WhatsApp Bot...")
-    # 1. Get or Create a Conversation:
-    conversation_sid = get_or_create_conversation()
-
-    # 2. Add or Confirm Participant to the Conversation:
-    participant_sid = add_participant(conversation_sid)
-
-    # 3. send_welcome_message -> pending!
-    send_message(conversation_sid, message="Welcome to WhatsEvents-Bot! Please provide your city and the date you want to go out: (e.g.: 'Berlin, 2025-04-04, 18')")
-    # write_file() (append messages with message)
-
-    # 4. Validate User Input -> pending!
-    print(return_latest_message(conversation_sid))
-    welcome_message = return_latest_message(conversation_sid)
-
-
-    while True:
-        time.sleep(10) # Check only every 10 seconds
-        new_message = return_latest_message(conversation_sid)
-
-        if new_message.lower() == "stop":
-            break
-
-        elif new_message != welcome_message:
-            city, date, hour = new_message.split(",")
-            response = create_response(city, date, hour)
-
-            # validation -> messages, state, ...
-            # write JSON
-
-            # Pass new_message to APIs:
-            # Define Message
-            send_message(conversation_sid, message=response)
-            send_message(conversation_sid, message="")
-
-
 def main():
     print("Starting Weather & Events WhatsApp Bot...")
     # 1. Get or Create a Conversation:
-    conversation_sid = get_or_create_conversation()
+    json_data = read_file()
+    conversation_sid = get_or_create_conversation(json_data)
 
     # 2. Add or Confirm Participant to the Conversation:
     participant_sid = add_participant(conversation_sid)
