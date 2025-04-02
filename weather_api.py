@@ -29,17 +29,18 @@ def print_weather(location, date, hour):
                     temperature_c = selected_hour['temp_c']
                     condition = selected_hour['condition']['text']
                     return f"""
-                                Weather in {location}, {country} on {date} at {hour}:00
-                                Temperature: {temperature_c}°C
-                                Condition: {condition}"
-                            """
+            Weather in {location}, {country} on {date} at {hour}:00
+            🌡️Temperature: {temperature_c}°C
+            ⛅Condition: {condition}
+            """
 
                 else:
-                    print(f"No weather data available for {date} at {hour}:00.")
+                    return(f"No weather data available for {date} at {hour}:00.")
             else:
-                print(f"No forecast data available for {date}.")
+                return(f"No forecast data available for {date}.")
         else:
-            print("Error:", response.status_code)
+            return("Error:", response.status_code)
     except requests.RequestException as e:
-        print("Request failed:", e)
+        return("Request failed:", e)
 
+# print(print_weather("Berlin", "2025-04-02", "18"))
