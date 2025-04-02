@@ -32,7 +32,8 @@ def create_response(location, date, hour):
     Returns:
         str: Combined message with events and weather information
     """
-    event_message = print_events_by_city(location, country_code="DE", page_size=3)
+    event_message = print_events_by_city(location, date, hour, country_code="")
+
     weather_message = get_weather(location, date, hour)
     try:
         message = weather_message + event_message
