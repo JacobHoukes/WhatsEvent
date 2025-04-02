@@ -74,4 +74,4 @@ def print_events_by_city(city, country_code="DE", keyword=None, classification=N
 
 # Example: Get events in Los Angeles, US
 # get_events_by_city(city="Chicago", country_code="US", keyword="theatre", classification="music", page_size=10)
-print(print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports")) # optional: add keywords and classification
+# print(print_events_by_city(city="Cologne", country_code="DE", page_size=10, classification="sports")) # optional: add keywords and classification

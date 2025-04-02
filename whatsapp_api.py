@@ -165,9 +165,9 @@ def main():
     list_conversations()
 
     # Call the function to delete all conversations
-    delete_all_conversations()
+    # delete_all_conversations()
     # Get or create a conversation
-    # conversation_sid = get_or_create_conversation()
+    conversation_sid = get_or_create_conversation()
 
     # List messages in latest conversation
     # list_messages(conversation_sid)
@@ -177,9 +177,9 @@ def main():
 
     # List participants in latest conversation
 
-    # # Add participant if needed
+    # Add participant if needed
 
-    # add_participant(conversation_sid)
+    add_participant(conversation_sid)
     # list_participants(conversation_sid)
 
     # # Send a test message
