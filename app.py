@@ -1,7 +1,7 @@
 from WhatsEvent.whatsapp_api import send_message
 from weather_api import get_weather
 from events_api import print_events_by_city
-from whatsapp_api import get_or_create_conversation, return_latest_message, add_participant, list_messages
+from whatsapp_api import get_or_create_conversation, return_latest_message, add_participant, list_messages, return_latest_author
 import time
 
 def get_user_input():
@@ -76,16 +76,18 @@ def main():
     participant_sid = add_participant(conversation_sid)
 
     # 3. send_welcome_message
-    send_message(conversation_sid,
-                 message="Welcome to WhatsEvents-Bot! Please provide your city and the date you want to go out: (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.")
+    welcome_message = "Welcome to WhatsEvents-Bot! Please provide your city and the date you want to go out: (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service."
+    send_message(conversation_sid, message=welcome_message)
 
     # Store the welcome message
     last_processed_message = return_latest_message(conversation_sid)
 
     # Main service loop
     while True:
+
         time.sleep(10)  # Check only every 10 seconds
         new_message = return_latest_message(conversation_sid)
+        new_message_author = return_latest_author(conversation_sid)
 
         # Skip if no new message or same as last processed
         if new_message == last_processed_message:
@@ -96,28 +98,29 @@ def main():
             send_message(conversation_sid, message="Thank you for using WhatsEvents-Bot! The service has been stopped.")
             break
 
-        try:
-            # Process the message
-            city, date, hour = new_message.split(",")
-            city = city.strip()
-            date = date.strip()
-            hour = hour.strip()
+        if new_message_author != "system":
+            try:
+                # Process the message
+                city, date, hour = new_message.split(",")
+                city = city.strip()
+                date = date.strip()
+                hour = hour.strip()
 
-            response = create_response(city, date, hour)
-            send_message(conversation_sid, message=response)
+                response = create_response(city, date, hour)
+                send_message(conversation_sid, message=response)
 
-            # Add prompt for next query
-            time.sleep(1)
-            send_message(conversation_sid,
-                         message="You can provide another city and date or type 'stop' to end the service. (e.g.: 'Berlin, 2025-04-04, 18')")
-
-        except ValueError:
-            # Handle incorrect format
-            if return_latest_message(conversation_sid) == "Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.":
-                continue
-            else:
+                # Add prompt for next query
+                time.sleep(1)
                 send_message(conversation_sid,
-                         message="Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.")
+                             message="You can provide another city and date or type 'stop' to end the service. (e.g.: 'Berlin, 2025-04-04, 18')")
+
+            except ValueError:
+                # Handle incorrect format
+                if return_latest_message(conversation_sid) == "Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.":
+                    continue
+                else:
+                    send_message(conversation_sid,
+                             message="Sorry, I couldn't understand that format. Please provide your city, date, and hour separated by commas (e.g.: 'Berlin, 2025-04-04, 18') or type 'stop' to end the service.")
 
         # Update the last processed message
         last_processed_message = new_message
