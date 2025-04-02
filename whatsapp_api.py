@@ -30,12 +30,18 @@ def list_messages(conversation_sid):
         print("No messages found in the conversation.")
         return
 
-    # Get the last 5 messages
-    last_five_messages = messages[-5:]
-
     print(f"Last 5 messages in conversation {conversation_sid}:")
-    for msg in last_five_messages:
+    for msg in messages:
         print(f"[{msg.date_created}] {msg.author}: {msg.body}")
+    return messages
+
+
+def return_latest_message(conversation_sid):
+    messages = get_conversations_list_resource(conversation_sid).messages.list()
+    latest_message = messages[-1].body
+
+    return latest_message
+
 
 
 def list_participants(conversation_sid):
@@ -159,7 +165,7 @@ def main():
     list_conversations()
 
     # Call the function to delete all conversations
-    #delete_all_conversations()
+    delete_all_conversations()
     # Get or create a conversation
     # conversation_sid = get_or_create_conversation()
 
@@ -170,15 +176,20 @@ def main():
     # remove_participant(conversation_sid, <ENTER PARTICIPANT SID HERE>)
 
     # List participants in latest conversation
-    # list_participants(conversation_sid)
 
     # # Add participant if needed
+
     # add_participant(conversation_sid)
+    # list_participants(conversation_sid)
 
     # # Send a test message
     # current_time = datetime.now().strftime("%d/%m/%Y -> %H:%M:%S")
     # test_message = f"Hello! This is a test message sent at {current_time}"
+    # latest_message = return_latest_message(conversation_sid)
+
     # send_message(conversation_sid, test_message)
+
+
 
 
 if __name__ == "__main__":
