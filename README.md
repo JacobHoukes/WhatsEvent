@@ -56,17 +56,21 @@ Event data comes from **Ticketmaster API**.
 
 # 🔍 Example Usage  
 
-### **User:**  
-> "What’s the weather like tomorrow in Berlin at 6 PM?"  
+### **Chatbot welcomes user:** 
+
+### **User inputs required info:**  
+> "Berlin, YYYY MM DD, HH"  
 
 ### **Chatbot Response:**  
 🌤 **Weather in Berlin at 18:00:**  
 - Temperature: 15°C  
 - Condition: Partly Cloudy  
 
-🎭 **Suggested events nearby:**  
+🎭 **Suggested events in Berlin:**  
 - 🎸 Rock Concert at "Berlin Arena"  
 - 🎭 Theatre Play "Hamlet" at "Berlin Theatre"  
+
+### **User clicks on links to events or forwards message to friends**  
 
 ---  
 
