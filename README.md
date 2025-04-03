@@ -1,34 +1,111 @@
-# About our project:
+# 📢 About our project  
 
-This repository is a result of collaborative work of a group of five 
-students. Our goal was to create a chatbot for whatsapp that easily
-gives access to weather data for a location and time the user chooses
-without leaving WhatsApp. Then in one workflow the chatbot suggests 
-events at the location the user chose. So you do not have to scroll in
-event booking websites while your friends chat on in WhatsApp. Everybody
-can easily share the results for events with the friends in the chat app
-without needing lots of technical skills. So our app is accessible for
-people of all ages and backgrounds. This code is a mvp version at the
-moment. Further technical features, like artificial intelligence for
-the chatbot answers can be integrated in the future.
+This repository is a result of collaborative work by five students. Our goal was to create a WhatsApp chatbot that provides weather data for a user-selected location and time without leaving WhatsApp.  
 
-# Technical information:
+In the same workflow, the chatbot suggests events in the chosen location. This eliminates the need to browse event booking websites separately, making group planning much easier. Users can share event results effortlessly with their friends in the chat app without requiring technical knowledge.  
 
-The app runs on the twilio communications api to enable chatting via
-WhatsAPP. The weather data comes from the weatherapi.com api. Our event
-data comes from the ticketmaster.com api. For accessing all the three 
-apis you need to register on your own and add your private secret data 
-like api keys and so on in your own .env file on your local repository.
+Currently, this is an MVP version, but future enhancements, including AI-powered chatbot responses, are planned.  
 
-# Further Requirements:
+### 🌟 Benefits:  
+✅ **Seamless**: No need to switch between apps.  
+✅ **User-friendly**: Works for people of all ages and backgrounds.  
+✅ **Business-friendly**: Helps event organizers reach more customers.  
 
-Our App is programmed in Python and we imported the following libraries:
-    - requests
-    - os
-    - dotenv
-    - json
-    - twilio.rest
+---  
 
-# Additional info:
+# ⚙️ Technical Information  
 
-You have any questions? Feel free to reach out to us. 
+The app runs on the **Twilio API** for WhatsApp communication.  
+Weather data is fetched from **WeatherAPI.com**.  
+Event data comes from **Ticketmaster API**.  
+
+**To use this project, you must register for these APIs and store your credentials in a `.env` file.**  
+
+---  
+
+# 🚀 Installation & Setup  
+
+### Prerequisites:  
+- Python 3.x  
+- Virtual environment (optional but recommended)  
+- API keys from Twilio, WeatherAPI, and Ticketmaster  
+
+### Setup Steps:  
+1. Clone the repository:  
+   ```sh
+   git clone https://github.com/your-username/WhatsEvent.git
+   cd WhatsEvent
+   ```  
+2. Install dependencies:  
+   ```sh
+   pip install -r requirements.txt
+   ```  
+3. Create a `.env` file and add your API keys:  
+   ```ini
+   TWILIO_ACCOUNT_SID=your_twilio_sid
+   TWILIO_AUTH_TOKEN=your_twilio_auth_token
+   WEATHER_API_KEY=your_weatherapi_key
+   TICKETMASTER_API_KEY=your_ticketmaster_key
+   ```  
+4. Run the application:  
+   ```sh
+   python main.py
+   ```  
+
+---  
+
+# 🔍 Example Usage  
+
+### **User:**  
+> "What’s the weather like tomorrow in Berlin at 6 PM?"  
+
+### **Chatbot Response:**  
+🌤 **Weather in Berlin at 18:00:**  
+- Temperature: 15°C  
+- Condition: Partly Cloudy  
+
+🎭 **Suggested events nearby:**  
+- 🎸 Rock Concert at "Berlin Arena"  
+- 🎭 Theatre Play "Hamlet" at "Berlin Theatre"  
+
+---  
+
+# 📌 Further Requirements  
+
+Our App is built with Python and uses the following libraries:  
+- `requests`  
+- `os`  
+- `dotenv`  
+- `json`  
+- `twilio.rest`  
+
+To install them manually, run:  
+```sh
+pip install requests python-dotenv twilio
+```
+
+---  
+
+# 🛠️ Future Plans  
+🚀 **Planned Enhancements:**  
+- AI-powered chatbot responses  
+- Support for more event platforms  
+- Voice command functionality  
+
+---  
+
+# 🤝 Contributing  
+
+We welcome contributions! If you'd like to improve this project, feel free to fork the repo and create a pull request.  
+
+---  
+
+# 📜 License  
+
+This project is licensed under the **MIT License**. You are free to use, modify, and distribute it. See the [LICENSE](LICENSE) file for more details.  
+
+---  
+
+# 📬 Contact  
+
+Have any questions? Feel free to reach out to us via GitHub Issues or email.  
