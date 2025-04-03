@@ -1,4 +1,4 @@
-About our project:
+# About our project:
 
 This repository is a result of collaborative work of a group of five 
 students. Our goal was to create a chatbot for whatsapp that easily
@@ -12,7 +12,7 @@ people of all ages and backgrounds. This code is a mvp version at the
 moment. Further technical features, like artificial intelligence for
 the chatbot answers can be integrated in the future.
 
-Technical information:
+# Technical information:
 
 The app runs on the twilio communications api to enable chatting via
 WhatsAPP. The weather data comes from the weatherapi.com api. Our event
@@ -20,7 +20,7 @@ data comes from the ticketmaster.com api. For accessing all the three
 apis you need to register on your own and add your private secret data 
 like api keys and so on in your own .env file on your local repository.
 
-Further Requirements:
+# Further Requirements:
 
 Our App is programmed in Python and we imported the following libraries:
     - requests
@@ -29,6 +29,6 @@ Our App is programmed in Python and we imported the following libraries:
     - json
     - twilio.rest
 
-Additional info:
+# Additional info:
 
 You have any questions? Feel free to reach out to us. 
